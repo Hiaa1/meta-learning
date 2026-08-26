@@ -1,6 +1,6 @@
 ---
 name: meta-learning
-description: Explain a concept, plan a staged path into an unfamiliar field, or diagnose a stuck problem, using a base-sealing protocol — declare what is held fixed for this discussion, give a mechanistic (falsifiable) one-line core, name the lateral neighbors it gets confused with, and give observable signs the explanation stops holding. Use when the user asks to understand, learn, or be taught a concept, theory, algorithm, or field ("what is X", "explain X", "why does X work", "I want to learn X", "help me get into X"), when they want a staged path for going deep on a domain, or when they are stuck on a problem where every layer checks out and it still does not work. Not for reading a specific file of code or looking up an API signature.
+description: Explain a concept, plan a staged path into an unfamiliar field, advance an ongoing learning thread one step, or diagnose a stuck problem — using a base-sealing protocol that declares what is held fixed, gives a mechanistic (falsifiable) one-line core, names the lateral neighbors it gets confused with, and gives observable signs the explanation stops holding. Advances exactly one step per reply and stops; never dumps a whole topic at once. Use when the user asks to understand, learn, or be taught a concept, theory, algorithm, or field ("what is X", "explain X", "why does X work", "I want to learn X", "help me get into X"), when they want a staged path for going deep on a domain, when they finished a step and ask what comes next ("what now", "got it working, then what", "should I go deeper here"), or when they are stuck on a problem where every layer checks out and it still does not work. Not for reading a specific file of code or looking up an API signature.
 ---
 
 # meta-learning
@@ -21,15 +21,76 @@ description: Explain a concept, plan a staged path into an unfamiliar field, or 
 
 目标不是让对方觉得听懂了,是让对方**能动手,并且知道自己什么时候会错**。前者可以靠流畅的文字伪造,后者不能。
 
+## 一次只推进一格
+
+**这是硬约束,优先级高于本文件里的任何其他规则。**
+
+一格 = **一个主题,一个层级**。一次回复只走一格,然后停下来等对方动手。
+
+- 不在同一次回复里跨两级。即使下一级你三句话就能讲完,也不讲。
+- 不在同一次回复里铺开多个并列主题。第 4 块的"横向邻居"只用来**区分**,不展开。
+- 讲完就停。不要追加"另外还需要知道……""顺便提一下……"。
+
+理由不是篇幅,是**顺序**:下一格的内容要靠这一格产生的摩擦来定位。摩擦还没发生就往下讲,讲的是你猜的那一格,不是他实际卡住的那一格。一次讲完 = 交付一份看起来完整、但没有任何一处扎进他实际问题的东西。
+
+判断有没有违反:**这次回复结束时,对方手上有没有一个明确的、能立刻执行的下一步动作?** 如果他手上是一堆知识而不是一个动作,就是推多了。
+
 ## 模式判定
+
+### 第一道闸:他有没有层图?
+
+**在跑任何解释之前先过这一关。**
+
+看提问的对象是**一个领域/系统**,还是**一个具体机制**:
+
+- 领域/系统("强化学习""MuJoCo""扩散模型""这个代码库")→ **他没有层图。只画层图,然后停。**不要在同一次回复里顺手解释其中任何一层。
+- 具体机制("PPO 为什么要 clip""这个 loss 为什么加负号")→ 提问本身预设了层图。走模式 A。
+
+一个具体机制的问题,如果发现他其实连层图都没有(表现:说不出这个东西属于哪一层、把相邻层的名词混着用),**退回去先画层图**,并说明为什么退。
+
+### 第二道闸:模式
 
 | 对方在要什么 | 模式 | 动作 |
 |---|---|---|
-| 理解一个概念 / 算法 / 现象 | A | 直接执行下面的骨架 |
-| 进入一个领域,要一条路径 | B | 先读 `references/ladder.md` |
-| 卡住了,尤其"每层都对但就是不 work" | C | 先读 `references/stuck.md` |
+| 理解一个具体机制 | A | 直接执行下面的骨架 |
+| 进入一个领域,要整条路径 | B | 读 `references/ladder.md` |
+| 卡住了,尤其"每层都对但就是不 work" | C | 读 `references/stuck.md` |
+| 上一格搞定了,问"然后呢" | D | 见下面「推进」 |
 
-判断不了就问一句,别猜。同一次对话里模式可以切换。
+判断不了就问一句,别猜。同一次对话里模式可以切换,但**一次回复只跑一个模式**。
+
+## 推进(模式 D)
+
+触发:对方说"搞定了""然后呢""接下来学什么",或报告上一格的升级钩子响了("确实开始觉得 ___ 别扭了")。
+
+### 每次继续,第一行先声明位置
+
+```
+你在:<主题> / L<n> ——上次挂着的钩子:<钩子内容>
+```
+
+这行是跨轮次唯一的状态载体,不要省。它同时在教对方:阶梯是真实存在的东西,不是修辞。
+
+如果对方希望跨会话保留,建议他在项目里开一个 `LEARNING.md` 记这几行。**不要默认创建文件**,问过再建。
+
+### 然后从四个动作里选**一个**
+
+| 动作 | 什么时候选 |
+|---|---|
+| **横向铺开** —— 同层,换一个相邻主题 | 层图上还有空白;或他刚才混淆了邻居 |
+| **纵向下挪** —— 同主题,基底降一格 | 别扭已经累积,**且**该级升级判据已满足 |
+| **换主题,仍在同层** | 当前主题的深度分配已经够了(多数主题该停在 L1) |
+| **停** | 他要的东西已经做出来了,再深就是浪费 |
+
+**默认是横向,不是纵向。** 自然的拉力总是"刚学完这个,再深挖这个",而按深度分配规则,大多数主题应该停在 L1,只有两三个值得进 L3/L4。选纵向要给出理由,选横向不用。
+
+### 钩子响了 ≠ 可以升级
+
+**别扭是触发复查的信号,升级判据才是闸门。** 两者不是一回事。
+
+对方说"我好奇下一层是什么"——那是好奇,不是别扭,不复查。
+对方说"我发现我得给它加第三个例外了"——那是别扭,开始复查。
+复查时对照 `references/ladder.md` 里该级的升级判据。**判据不满足就明说不满足、缺哪一条、怎么补**,不要因为他想听就往下讲。跳过 L1 往下讲的结果是他既听懂了又干不了活。
 
 ## 模式 A:解释一个东西
 
@@ -80,6 +141,8 @@ description: Explain a concept, plan a staged path into an unfamiliar field, or 
 3. **不从历史起源开头。** 历史是 L2 的手术刀,不是 L0/L1 的通读任务。在这一层讲历史等于拖延。
 4. **不追求完整。** 遗漏是设计,不是失误;但遗漏了什么要在封线那里说一句。
 5. **不列举变体和流派。** 多组基底属于 L3,对初学者是噪声。
+6. **不越级。** 即使下一层三句话就能说清,也留到下一格。第 7 块只给**钩子**(什么感觉出现时该往下),不给**内容**(下面是什么)。
+7. **不追加。** 骨架走完就停。"另外""顺便""还要注意"后面的东西一律删掉——那些是下一格的,或者根本不该有。
 
 ### 对方问"基底为什么成立"时
 
@@ -115,8 +178,10 @@ description: Explain a concept, plan a staged path into an unfamiliar field, or 
 4. 封区内混进免责声明了吗?("大致上""实际更复杂""这只是简化版")
 5. 有横向邻居和区分判据?
 6. 结尾有一个**要求先写预测再执行**的动作?
+7. **这次只推进了一格吗?**(一个主题、一个层级、没有越级、没有追加)
+8. **对方读完手上是一个动作,还是一堆知识?** 是一堆知识就是推多了。
 
-任何一条不过,重写那一块再发。
+任何一条不过,重写那一块再发。第 7、8 条不过就整条删掉多出来的部分,不要压缩——压缩解决不了推多了的问题。
 
 ## 骨架示例(压缩版,示形状不示内容)
 
